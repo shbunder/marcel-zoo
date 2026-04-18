@@ -18,7 +18,7 @@ import re
 
 from marcel_core.plugin import get_logger, paths, register
 
-from . import cache
+from .cache import get_articles
 
 log = get_logger(__name__)
 
@@ -83,7 +83,7 @@ async def search(params: dict, user_slug: str) -> str:
     - ``limit``: max results (default 50)
     """
     limit = int(params.get('limit', '50'))
-    rows = cache.get_articles(
+    rows = get_articles(
         user_slug,
         source=params.get('source'),
         topic=params.get('topic'),
@@ -99,7 +99,7 @@ async def search(params: dict, user_slug: str) -> str:
 async def recent(params: dict, user_slug: str) -> str:
     """Get the most recent articles, optionally filtered by source or topic."""
     limit = int(params.get('limit', '20'))
-    rows = cache.get_articles(
+    rows = get_articles(
         user_slug,
         source=params.get('source'),
         topic=params.get('topic'),

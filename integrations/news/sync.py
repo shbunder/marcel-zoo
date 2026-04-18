@@ -16,7 +16,7 @@ import yaml
 from marcel_core.plugin import get_logger
 from marcel_core.plugin.rss import fetch_feed
 
-from . import cache
+from .cache import filter_new_links, upsert_articles
 
 log = get_logger(__name__)
 
@@ -115,13 +115,13 @@ async def sync_feeds(user_slug: str) -> dict[str, Any]:
             unique.append(art)
 
     all_links = [art['link'] for art in unique if art.get('link')]
-    new_links = set(cache.filter_new_links(user_slug, all_links))
+    new_links = set(filter_new_links(user_slug, all_links))
 
     new_articles = [art for art in unique if art.get('link') in new_links]
 
     stored = 0
     if new_articles:
-        stored = cache.upsert_articles(user_slug, new_articles)
+        stored = upsert_articles(user_slug, new_articles)
 
     source_summary = [{'name': name, 'fetched': count} for name, count in sorted(source_counts.items())]
 

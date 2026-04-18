@@ -1,11 +1,11 @@
 """Unit tests for the news habitat — cache + sync.
 
-Tests load ``cache.py`` and ``sync.py`` directly via ``importlib`` rather
-than importing the parent package, because importing ``__init__.py`` would
-re-trigger ``@register`` and collide on the kernel's global integration
-registry. The handlers in ``__init__.py`` are three-line wrappers over
-cache + sync; they are exercised end-to-end by the kernel's discovery +
-dispatch tests in the Marcel repo (``tests/skills/test_news_habitat.py``).
+Tests load ``cache.py`` and ``sync.py`` under a synthetic parent package
+via ``importlib``, bypassing ``__init__.py`` so ``@register`` does not
+collide on the kernel's global integration registry. The handlers in
+``__init__.py`` are three-line wrappers over cache + sync; they are
+exercised end-to-end by the kernel's discovery + dispatch tests in the
+Marcel repo.
 
 A per-test ``tmp_path`` is wired into :mod:`marcel_core.storage._root` so
 the SQLite DB lands in an isolated directory.
@@ -16,6 +16,7 @@ from __future__ import annotations
 import importlib.util
 import pathlib
 import sys
+import types
 from typing import Any
 from unittest.mock import AsyncMock, patch
 
@@ -24,24 +25,27 @@ import pytest
 from marcel_core.storage import _root
 
 _HABITAT_DIR = pathlib.Path(__file__).resolve().parent.parent
+_PKG = '_news_under_test'
 
 
-def _load(name: str, filename: str) -> Any:
-    path = _HABITAT_DIR / filename
-    spec = importlib.util.spec_from_file_location(name, path)
+def _load_submodule(submodule: str) -> Any:
+    qualified = f'{_PKG}.{submodule}'
+    path = _HABITAT_DIR / f'{submodule}.py'
+    spec = importlib.util.spec_from_file_location(qualified, path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
+    module.__package__ = _PKG
+    sys.modules[qualified] = module
     spec.loader.exec_module(module)
     return module
 
 
-cache = _load('_news_cache_under_test', 'cache.py')
-sync = _load('_news_sync_under_test', 'sync.py')
+_parent = types.ModuleType(_PKG)
+_parent.__path__ = [str(_HABITAT_DIR)]
+sys.modules[_PKG] = _parent
 
-# sync.py imports cache via relative ``from . import cache`` — rewire its
-# reference to the same module we loaded so both files share one sqlite path.
-sync.cache = cache
+cache = _load_submodule('cache')
+sync = _load_submodule('sync')
 
 
 @pytest.fixture(autouse=True)
