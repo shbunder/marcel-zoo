@@ -1,0 +1,11 @@
+name: icloud
+description: Access the user's iCloud Calendar and Mail via CalDAV / IMAP
+provides:
+  - icloud.calendar
+  - icloud.mail
+requires:
+  credentials:
+    - ICLOUD_APPLE_ID
+    - ICLOUD_APP_PASSWORD
+  packages:
+    - caldav
