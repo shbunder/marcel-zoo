@@ -1,0 +1,10 @@
+name: docker
+description: Manage Docker containers on the home NUC
+provides:
+  - docker.list
+  - docker.status
+  - docker.restart
+  - docker.logs
+requires:
+  env:
+    - DOCKER_HOST
