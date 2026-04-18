@@ -1,0 +1,16 @@
+name: news
+description: Sync, store, and query RSS news articles from Belgian sources
+provides:
+  - news.sync
+  - news.search
+  - news.recent
+requires: {}
+
+scheduled_jobs:
+  - name: "News sync"
+    handler: news.sync
+    cron: "0 6,18 * * *"
+    timezone: "Europe/Brussels"
+    description: "Fetch every configured RSS feed for every user twice daily"
+    notify: on_failure
+    channel: telegram

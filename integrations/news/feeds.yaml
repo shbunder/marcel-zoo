@@ -1,0 +1,54 @@
+# News feed configuration for the news.sync integration.
+#
+# Edit this file to add/remove sources or individual feeds.
+# After editing, the next news.sync run will pick up the changes.
+#
+# Each source has:
+#   name: Display name used in the articles database
+#   feeds: List of RSS/Atom feed URLs
+#   exclude_categories: (optional) Skip articles with these categories
+
+sources:
+  - name: VRT NWS
+    feeds:
+      - https://www.vrt.be/vrtnws/nl.rss.articles.xml
+    exclude_categories:
+      - sport
+      - weer
+
+  - name: De Tijd
+    feeds:
+      - https://www.tijd.be/rss/nieuws.xml
+      - https://www.tijd.be/rss/ondernemen.xml
+      - https://www.tijd.be/rss/politiek.xml
+      - https://www.tijd.be/rss/opinie.xml
+      - https://www.tijd.be/rss/sabato.xml
+      - https://www.tijd.be/rss/cultuur.xml
+      - https://www.tijd.be/rss/netto.xml
+      - https://www.tijd.be/rss/markten_live.xml
+
+  - name: Knack
+    feeds:
+      - https://www.knack.be/feed/
+      - https://www.knack.be/nieuws/belgie/feed/
+      - https://www.knack.be/nieuws/wereld/feed/
+
+  - name: Trends
+    feeds:
+      - https://trends.knack.be/feed/
+      - https://trends.knack.be/finance/feed/
+      - https://trends.knack.be/tech/feed/
+
+  - name: Datanews
+    feeds:
+      - https://datanews.knack.be/feed/
+
+  - name: De Morgen
+    feeds:
+      - https://www.demorgen.be/rss.xml
+      - https://www.demorgen.be/tech-wetenschap/rss.xml
+
+  - name: HLN
+    feeds:
+      - https://www.hln.be/rss.xml
+      - https://www.hln.be/economie/rss.xml
