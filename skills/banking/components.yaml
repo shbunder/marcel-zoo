@@ -1,0 +1,50 @@
+components:
+  - name: transaction_list
+    description: List of bank transactions with running balance
+    props:
+      type: object
+      properties:
+        transactions:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+                description: Transaction date
+              description:
+                type: string
+                description: Transaction description
+              amount:
+                type: number
+                description: Transaction amount (negative for debits)
+              balance:
+                type: number
+                description: Running balance after this transaction
+            required: [date, description, amount]
+        currency:
+          type: string
+          default: EUR
+          description: Currency code
+      required: [transactions]
+
+  - name: balance_card
+    description: Account balance summary card
+    props:
+      type: object
+      properties:
+        account_name:
+          type: string
+          description: Account display name
+        balance:
+          type: number
+          description: Current balance
+        currency:
+          type: string
+          default: EUR
+        last_updated:
+          type: string
+          format: date-time
+          description: When the balance was last synced
+      required: [account_name, balance]

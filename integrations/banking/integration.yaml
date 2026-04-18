@@ -1,0 +1,23 @@
+name: banking
+description: Access the user's linked bank accounts (KBC, ING, etc.) via EnableBanking — balances, transactions, and spending insights
+provides:
+  - banking.setup
+  - banking.complete_setup
+  - banking.status
+  - banking.accounts
+  - banking.balance
+  - banking.transactions
+  - banking.sync
+requires:
+  credentials:
+    - ENABLEBANKING_APP_ID
+  files:
+    - enablebanking.pem
+
+scheduled_jobs:
+  - name: "Bank sync"
+    handler: banking.sync
+    cron: "0 */8 * * *"
+    description: "Sync bank transactions and balances for every linked user every 8 hours (PSD2 rate-limit budget)"
+    notify: on_failure
+    channel: telegram
