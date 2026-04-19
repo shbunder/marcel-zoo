@@ -18,8 +18,8 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
 
-from marcel_core.channels.telegram import bot, sessions
-from marcel_core.channels.telegram.formatting import (
+from . import bot, sessions
+from .formatting import (
     DAYS_PER_PAGE,
     calendar_nav_markup,
     escape_html,

@@ -51,8 +51,8 @@ class _TelegramPlugin:
         return router
 
     async def send_message(self, user_slug: str, text: str) -> bool:
-        from marcel_core.channels.telegram import bot, sessions
-        from marcel_core.channels.telegram.formatting import markdown_to_telegram_html
+        from . import bot, sessions
+        from .formatting import markdown_to_telegram_html
 
         chat_id = sessions.get_chat_id(user_slug)
         if not chat_id:
@@ -66,7 +66,7 @@ class _TelegramPlugin:
         image_bytes: bytes,
         caption: str | None = None,
     ) -> bool:
-        from marcel_core.channels.telegram import bot, sessions
+        from . import bot, sessions
 
         chat_id = sessions.get_chat_id(user_slug)
         if not chat_id:
@@ -80,8 +80,8 @@ class _TelegramPlugin:
         artifact_id: str,
         title: str,
     ) -> bool:
-        from marcel_core.channels.telegram import bot, sessions
-        from marcel_core.channels.telegram.formatting import escape_html
+        from . import bot, sessions
+        from .formatting import escape_html
 
         chat_id = sessions.get_chat_id(user_slug)
         if not chat_id:
@@ -98,7 +98,7 @@ class _TelegramPlugin:
         return True
 
     def resolve_user_slug(self, external_id: str) -> str | None:
-        from marcel_core.channels.telegram import sessions
+        from . import sessions
 
         return sessions.get_user_slug(external_id)
 
