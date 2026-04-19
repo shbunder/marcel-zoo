@@ -1,0 +1,45 @@
+components:
+  - name: calendar
+    description: Calendar event list grouped by date
+    props:
+      type: object
+      properties:
+        events:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                description: Date label (e.g. "Today — Friday Apr 3")
+              title:
+                type: string
+                description: Event title
+              time:
+                type: string
+                description: Time or time range (e.g. "10:00–12:00")
+              location:
+                type: string
+                description: Event location
+            required: [date, title]
+      required: [events]
+
+  - name: checklist
+    description: Interactive checklist with toggleable items
+    props:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              text:
+                type: string
+                description: Item label
+              checked:
+                type: boolean
+                default: false
+                description: Whether the item is checked
+            required: [text]
+      required: [items]
