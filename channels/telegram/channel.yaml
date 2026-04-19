@@ -1,0 +1,11 @@
+name: telegram
+description: Telegram Bot API channel — webhook + bot delivery, Mini App integration, markdown formatting
+requires:
+  credentials:
+    - TELEGRAM_BOT_TOKEN
+capabilities:
+  markdown: true
+  rich_ui: true
+  streaming: true
+  progress_updates: true
+  attachments: true
