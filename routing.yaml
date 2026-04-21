@@ -1,0 +1,101 @@
+# Marcel tier-routing configuration (ISSUE-e0db47).
+#
+# Controls how Marcel picks a model tier for the *first message* of a new
+# conversation, and when to bump the session up a tier after a frustration
+# signal from the user. Seeded on first startup into ~/.marcel/routing.yaml;
+# edit that copy and Marcel will pick up the changes on the next turn (no
+# restart needed — the file's mtime is watched).
+#
+# Matching is case-insensitive and combines EN + NL in a single pass. The
+# classifier only picks between `fast` and `standard` — POWER is reached
+# exclusively via an explicit skill (`preferred_tier: power`) or subagent
+# (`model: power`), so a chatty conversation can never burn Opus quota.
+
+# Triggers that suggest a simple task → classify session as FAST.
+# Matched against the first user message of a session.
+fast_triggers:
+  en:
+    - "\\bwhat(?:'s| is)\\b"
+    - "\\bwhen(?:'s| is)?\\b"
+    - "\\bwho(?:'s| is)?\\b"
+    - "\\bwhere(?:'s| is)?\\b"
+    - "\\bhow much\\b"
+    - "\\bhow many\\b"
+    - "\\btime\\b"
+    - "\\bweather\\b"
+    - "\\bdefine\\b"
+    - "\\btell me a joke\\b"
+    - "\\bremind me\\b"
+  nl:
+    - "\\bwat\\b"
+    - "\\bwanneer\\b"
+    - "\\bwie\\b"
+    - "\\bwaar\\b"
+    - "\\bhoeveel\\b"
+    - "\\bhoe laat\\b"
+    - "\\bweer\\b"
+    - "\\bdefinieer\\b"
+    - "\\bvertel (?:me )?een mop\\b"
+    - "\\bherinner me\\b"
+
+# Triggers that suggest a complex task → classify session as STANDARD.
+# Matched after fast_triggers; if any standard trigger also fires, STANDARD
+# wins (complexity signal trumps simple-lookup signal).
+standard_triggers:
+  en:
+    - "\\bdebug\\b"
+    - "\\banaly[sz]e\\b"
+    - "\\bplan\\b"
+    - "\\bdesign\\b"
+    - "\\bimplement\\b"
+    - "\\brefactor\\b"
+    - "\\bwrite (?:code|a function|a script|a test)\\b"
+    - "\\bwhy (?:does|is|won't|doesn't)\\b"
+    - "\\bexplain (?:how|why)\\b"
+    - "\\btroubleshoot\\b"
+    - "\\bfix (?:this|the|my)\\b"
+    - "```"  # fenced code block in message
+  nl:
+    - "\\bdebug\\b"
+    - "\\banalyseer\\b"
+    - "\\bplan\\b"
+    - "\\bontwerp\\b"
+    - "\\bimplementeer\\b"
+    - "\\brefactor\\b"
+    - "\\bschrijf (?:code|een functie|een script|een test)\\b"
+    - "\\bwaarom (?:doet|werkt|lukt)\\b"
+    - "\\bleg (?:uit|eens uit)\\b"
+    - "\\blos (?:dit|het) op\\b"
+
+# Frustration / exasperation triggers — bump the session up one tier
+# (fast → standard). Seed adapted from clawcode
+# (~/repos/clawcode/utils/userPromptKeywords.ts). If the session is already
+# at standard, the bump is a no-op (POWER is subagent-only).
+frustration_triggers:
+  en:
+    - "\\b(?:wtf|wth|ffs|omfg)\\b"
+    - "\\bshit(?:ty|tiest)?\\b"
+    - "\\bpiece of (?:shit|crap|junk)\\b"
+    - "\\bwhat the (?:fuck|hell)\\b"
+    - "\\bfucking?\\s+(?:broken|useless|terrible|awful|horrible)\\b"
+    - "\\b(?:screw (?:this|you)|fuck you)\\b"
+    - "\\bso frustrating\\b"
+    - "\\bthis sucks\\b"
+    - "\\bdamn it\\b"
+    - "\\b(?:useless|horrible|awful|terrible)\\b"
+    - "\\bpiss(?:ed|ing)? off\\b"
+    - "\\bdumbass\\b"
+  nl:
+    - "\\b(?:verdomme|verdorie|godverdomme|gvd)\\b"
+    - "\\b(?:kut|klote|shit)\\b"
+    - "\\bwat de (?:fuck|hel)\\b"
+    - "\\b(?:waardeloos|belachelijk|vreselijk|niksnut)\\b"
+    - "\\bniet te geloven\\b"
+    - "\\bdat werkt (?:voor geen meter|niet)\\b"
+    - "\\bklote(?:zooi|ding)?\\b"
+
+# Default tier if no fast_triggers or standard_triggers match the session's
+# first message. `standard` is the safe choice — the worst-case "missed FAST
+# routing" is a slightly more expensive call, while a missed STANDARD routing
+# on a complex question produces a bad answer.
+default_tier: standard
