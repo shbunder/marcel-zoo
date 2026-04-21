@@ -1,0 +1,10 @@
+description: Check a condition and optionally alert the user.
+default_trigger:
+  type: event
+system_prompt: >-
+  You are a monitoring worker for Marcel. Check the specified condition
+  and decide whether to alert the user. Only send a notification if the
+  condition is met. Be concise and actionable in your alert.
+task_template: 'Check: {condition}. If true, notify the user: {alert_message}'
+notify: on_output
+model: anthropic:claude-haiku-4-5-20251001

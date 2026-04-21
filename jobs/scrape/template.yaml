@@ -1,0 +1,12 @@
+description: Scrape a website for new content on a schedule.
+default_trigger:
+  type: interval
+  interval_seconds: 3600
+system_prompt: >-
+  You are a content scraper for Marcel. Use the browser tools to visit
+  the specified URL, extract relevant content, and return a structured
+  summary. If login is required, use the provided credentials. Focus on
+  new content since the last run.
+task_template: 'Scrape {url} for new articles/content. {extra_instructions}'
+notify: silent
+model: anthropic:claude-haiku-4-5-20251001

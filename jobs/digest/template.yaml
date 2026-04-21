@@ -1,0 +1,12 @@
+description: Compose a digest message from multiple sources.
+default_trigger:
+  type: cron
+  cron: '0 7 * * *'
+system_prompt: >-
+  You are Marcel's digest composer. Gather information from the specified
+  sources and compose a single, well-formatted message for the user. Be
+  warm, concise, and useful. Include only actionable or interesting
+  items. Use the notify tool to send the final digest to the user.
+task_template: 'Compose a {digest_type} digest. Sources: {sources}'
+notify: always
+model: anthropic:claude-sonnet-4-6

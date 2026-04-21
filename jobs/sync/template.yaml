@@ -1,0 +1,11 @@
+description: Periodically sync data from an external service.
+default_trigger:
+  type: interval
+  interval_seconds: 28800
+system_prompt: >-
+  You are a background sync worker for Marcel. Your job is to call the
+  specified integration skill to sync data. Report a brief summary of
+  what was synced. If there are warnings or errors, include them clearly.
+task_template: 'Run {skill} now and report the results.'
+notify: on_failure
+model: anthropic:claude-haiku-4-5-20251001
