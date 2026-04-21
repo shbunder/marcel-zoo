@@ -1,0 +1,38 @@
+[project]
+name = "marcel-zoo"
+description = "Habitats (integrations, skills, channels, jobs, agents) for the Marcel kernel."
+readme = "README.md"
+license = {text = "MIT"}
+version = "0.1.0"
+authors = [
+    { name="Shaun Bundervoet", email = "shaun.bundervoet@me.com"},
+]
+requires-python = ">=3.11,<3.13"
+
+# Python packages used by habitats in this repo.
+#
+# Kept minimal: most habitats use stdlib plus ``httpx`` / ``jwt`` / ``yaml``,
+# all of which the marcel-core kernel already pulls in as core deps — the
+# zoo runs inside marcel-core's venv, so those are available transitively
+# and do NOT need to be redeclared here. Only list deps that exist *solely*
+# because a habitat imports them.
+dependencies = [
+    "caldav>=3.1.0",    # integrations/icloud — CalDAV client
+    "vobject>=0.9.9",   # integrations/icloud — iCalendar object parsing (via caldav result objects)
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# The zoo is NOT packaged as a wheel. The kernel discovers habitats by
+# walking ``MARCEL_ZOO_DIR`` at runtime (see ``marcel_core.plugin``), not
+# by ``import marcel_zoo``. This pyproject exists to declare dependencies
+# for ``uv sync`` / ``pip install -e .`` in the zoo checkout — not to
+# produce an installable package. Hence no ``[tool.hatch.build.targets.wheel]``.
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+testpaths = ["integrations", "skills", "channels"]
